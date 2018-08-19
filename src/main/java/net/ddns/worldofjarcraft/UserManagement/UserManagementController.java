@@ -74,4 +74,24 @@ public class UserManagementController {
             return new ResponseEntity(new ErrorClass("User does not exist!"),HttpStatus.NOT_FOUND);
         }
     }
+    private final String UPDATE_SQL = "UPDATE `benutzer` SET `Passwort` = ? WHERE `benutzer`.`EMail` = ?;";
+    @RequestMapping("/user/changePassword")
+    public ResponseEntity changePassword(HttpServletRequest request, @RequestParam(name = "newPassword") String newPassword){
+        Benutzer b = Benutzer.getBenutzer(request.getUserPrincipal().getName());
+        if(b!=null){
+            template.update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                    PreparedStatement ps = connection.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, newPassword);
+                    ps.setString(2,b.getEMail());
+                    return ps;
+                }
+            }, new GeneratedKeyHolder());
+            return new ResponseEntity(Benutzer.getBenutzer(b.getEMail()),HttpStatus.ACCEPTED);
+        }
+        else {
+            return new ResponseEntity(new ErrorClass("User does not exist!"),HttpStatus.NOT_FOUND);
+        }
+    }
 }

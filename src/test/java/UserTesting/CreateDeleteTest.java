@@ -51,8 +51,21 @@ public class CreateDeleteTest {
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertEquals(test.getEMail(), client.getEMail());
         assertEquals(test.getPasswort(),client.getPasswort());
+        updateClient();
         deleteClient();
     }
+
+    private void updateClient(){
+        String old_pw = test.getPasswort();
+        test.setPasswort(createRandomString((new Random()).nextInt(10)));
+        ResponseEntity<Benutzer> responseEntity =
+                restTemplate.withBasicAuth(test.getEMail(),old_pw).getForEntity("/user/changePassword?newPassword="+test.getPasswort(),Benutzer.class);
+        Benutzer client = responseEntity.getBody();
+        assertEquals(HttpStatus.ACCEPTED, responseEntity.getStatusCode());
+        assertEquals(test.getEMail(), client.getEMail());
+        assertEquals(test.getPasswort(),client.getPasswort());
+    }
+
     private void deleteClient() {
         ResponseEntity<SuccessClass> responseEntity =
                 restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).getForEntity("/user/delete",SuccessClass.class);
