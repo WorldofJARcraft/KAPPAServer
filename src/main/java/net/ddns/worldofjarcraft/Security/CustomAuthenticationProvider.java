@@ -19,14 +19,8 @@ public class CustomAuthenticationProvider
 
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
-        boolean authenticated = false;
-        for(Benutzer benutzer : Benutzer.getAll()){
-            if(benutzer.getEMail().equals(name)&&benutzer.getPasswort().equals(password)){
-                authenticated = true;
-                break;
-            }
-        }
-        if (authenticated) {
+        Benutzer b = Benutzer.getBenutzer(name);
+        if (b!=null && b.getPasswort().equals(password)) {
 
             // use the credentials
             // and authenticate against the third-party system

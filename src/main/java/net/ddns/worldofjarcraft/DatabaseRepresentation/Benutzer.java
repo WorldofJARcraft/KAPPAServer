@@ -15,17 +15,10 @@ public class Benutzer {
         return EMail;
     }
 
-    public void setEMail(String EMail) {
-        this.EMail = EMail;
-    }
-
     public String getPasswort() {
         return Passwort;
     }
 
-    public void setPasswort(String passwort) {
-        Passwort = passwort;
-    }
 
     public Benutzer(String EMail, String passwort) {
 
@@ -43,5 +36,10 @@ public class Benutzer {
                 "SELECT * FROM Benutzer WHERE ?;", new Object[]{"1"},
                 (rs, RowNum) -> new Benutzer(rs.getString("EMail"), rs.getString("Passwort"))
         ));
+    }
+
+    public static Benutzer getBenutzer(String EMail){
+        List<Benutzer> benutzers = new ArrayList<Benutzer>(Application.getTemplate().query("SELECT * FROM Benutzer WHERE EMail=?;", new Object[] {EMail }, (rs, RowNum) -> new Benutzer(rs.getString("EMail"), rs.getString("Passwort"))));
+        return benutzers.isEmpty()?null:benutzers.get(0);
     }
 }
