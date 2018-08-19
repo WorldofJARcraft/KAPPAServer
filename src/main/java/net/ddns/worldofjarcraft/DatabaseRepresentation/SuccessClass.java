@@ -6,6 +6,13 @@ public class SuccessClass {
     public String getSuccess_message() {
         return success_message;
     }
+    public SuccessClass(){
+
+    }
+
+    public void setSuccess_message(String success_message) {
+        this.success_message = success_message;
+    }
 
     public SuccessClass(String success_message) {
 

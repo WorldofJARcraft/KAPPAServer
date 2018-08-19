@@ -19,6 +19,16 @@ public class Benutzer {
         return Passwort;
     }
 
+    public Benutzer(){}
+
+
+    public void setEMail(String EMail) {
+        this.EMail = EMail;
+    }
+
+    public void setPasswort(String passwort) {
+        Passwort = passwort;
+    }
 
     public Benutzer(String EMail, String passwort) {
 

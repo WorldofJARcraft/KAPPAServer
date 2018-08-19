@@ -49,7 +49,7 @@ public class UserManagementController {
                 }
             }, holder);
         //System.out.println("Inserted user "+holder.getKey().intValue());
-        return new ResponseEntity(b,HttpStatus.OK);
+        return new ResponseEntity(b,HttpStatus.CREATED);
         }
         else {
             ErrorClass error = new ErrorClass("User exists!");
