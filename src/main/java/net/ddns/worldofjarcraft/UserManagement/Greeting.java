@@ -1,4 +1,4 @@
-package net.ddns.worldofjarcraft;
+package net.ddns.worldofjarcraft.UserManagement;
 
 public class Greeting {
     private final long id;
