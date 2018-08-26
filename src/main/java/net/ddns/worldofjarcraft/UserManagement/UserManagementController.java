@@ -31,8 +31,6 @@ public class UserManagementController {
     private final String DELETE_SQL = "DELETE FROM benutzer WHERE EMail=?;";
     @Autowired
     JdbcTemplate template;
-    @Autowired
-    NamedParameterJdbcTemplate namedTemplate;
     @RequestMapping("/user/create")
     public ResponseEntity createUser(@RequestParam(value = "EMail", required = true) String EMail, @RequestParam(value = "Password", required = true) String Password){
         Benutzer b = new Benutzer(EMail,Password);
