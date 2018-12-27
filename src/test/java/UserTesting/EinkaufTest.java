@@ -1,5 +1,6 @@
 package UserTesting;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.ddns.worldofjarcraft.Application;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Einkauf;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,classes = Application.class)
@@ -40,16 +42,30 @@ public class EinkaufTest {
     }
 
     private Benutzer test;
+    private int id;
+
+    /**
+     * Generates random String.
+     * @param length lengtrh of String
+     * @return String
+     */
+    private String randomString(int length){
+        StringBuilder builder = new StringBuilder();
+        Random rand = new Random();
+            for(int i=0; i < length;i++){
+                builder.append((char) (rand.nextInt(22)+97));
+            }
+        return builder.toString();
+    }
     @Before
     public void createUser(){
-        test = new Benutzer("UndNochEinTestUser","Test");
+        test = new Benutzer(randomString(20),randomString(10));
         System.out.println("Testing with User "+test.toString());
-        BasicAuthorizationInterceptor bai = new BasicAuthorizationInterceptor(test.getEMail(), test.getPasswort());
-        restTemplate.getRestTemplate().getInterceptors().add(bai);
+        CreateDeleteTest.createClientWithCredentials(restTemplate, test.getEMail(), test.getPasswort());
     }
 
-    @Test
-    public void showEinkaeufe() {
+
+    private void showEinkaeufe() {
 
         ResponseEntity<Einkauf[]> responseEntity =
                 restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).getForEntity("/einkauf",Einkauf[].class);
@@ -57,11 +73,32 @@ public class EinkaufTest {
         Einkauf[] einkaufs = responseEntity.getBody();
     }
 
-    @Test
-    public void addEinkauf(){
+    private void addEinkauf(){
         ResponseEntity<Integer> responseEntity =
-                restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).postForEntity("/einkauf/create",null,Integer.class,new HashMap<String, String>().put("Einkauf","Kaufe ein"));
+                restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).getForEntity("/einkauf/create?Einkauf=EinEinkauf",Integer.class);
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        //save ID for later tests
+        id = responseEntity.getBody();
     }
 
+    private void updateEinkauf(){
+        ResponseEntity<Integer> responseEntity =
+                restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).getForEntity("/einkauf/"+id+"/update?newValue=Hallo",Integer.class);
+        assertEquals(HttpStatus.ACCEPTED, responseEntity.getStatusCode());
+        assertNotEquals(responseEntity.getBody(),new Integer(0));
+    }
+    private void deleteEinkauf(){
+        ResponseEntity<Integer> responseEntity =
+                restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).getForEntity("/einkauf/"+id+"/delete",Integer.class);
+        assertEquals(HttpStatus.ACCEPTED, responseEntity.getStatusCode());
+        assertNotEquals(responseEntity.getBody(),new Integer(0));
+    }
+
+    @Test
+    public void runTest(){
+        addEinkauf();
+        showEinkaeufe();
+        updateEinkauf();
+        deleteEinkauf();
+    }
 }

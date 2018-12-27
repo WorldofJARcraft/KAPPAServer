@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.security.SecureRandom;
@@ -41,14 +43,19 @@ public class CreateDeleteTest {
         test = new Benutzer(createRandomString(rand.nextInt(10)+2),createRandomString(rand.nextInt(10)));
         System.out.println("Testing with User "+test.toString());
     }
-
-    @Test
-    public void createClient() {
+    public static ResponseEntity<Benutzer> createClientWithCredentials( TestRestTemplate restTemplate, String user, String pw) {
 
         ResponseEntity<Benutzer> responseEntity =
-                restTemplate.getForEntity("/user/create?EMail="+test.getEMail()+"&Password="+test.getPasswort(),Benutzer.class);
-        Benutzer client = responseEntity.getBody();
+                restTemplate.getForEntity("/user/create?EMail="+user+"&Password="+pw,Benutzer.class);
+
+        return responseEntity;
+
+    }
+    @Test
+    public void createClient() {
+        ResponseEntity<Benutzer> responseEntity = createClientWithCredentials(restTemplate, test.getEMail(),test.getPasswort());
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        Benutzer client = responseEntity.getBody();
         assertEquals(test.getEMail(), client.getEMail());
         assertEquals(test.getPasswort(),client.getPasswort());
         updateClient();
