@@ -1,9 +1,6 @@
 package net.ddns.worldofjarcraft;
 
-import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
-import net.ddns.worldofjarcraft.DatabaseRepresentation.BenutzerRepository;
-import net.ddns.worldofjarcraft.DatabaseRepresentation.Einkauf;
-import net.ddns.worldofjarcraft.DatabaseRepresentation.EinkaufRepository;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -30,7 +27,13 @@ public class Application implements CommandLineRunner {
 
     @Autowired
     private BenutzerRepository users;
-    
+    @Autowired
+    private KuehlschrankRepository schraenke;
+    @Autowired
+    private FachRepository faecher;
+
+    @Autowired
+    private LebensmittelRepository lebensmittelRepository;
     @Override
     public void run(String... args) {
         for(Einkauf einkauf : repo.findAll()){
@@ -40,6 +43,14 @@ public class Application implements CommandLineRunner {
         System.out.println("Und jetzt alle...");
         for(Benutzer benutzer : users.findAll()){
             System.out.println(benutzer.getEMail());
+        }
+        System.out.println("Und nun zum Kuehlschrank-Test...");
+        Kuehlschrank schrank = schraenke.findById(18).get();
+        for(Fach fach : Fach.getAll(faecher,schrank)){
+            System.out.println("Fach: "+fach.getlNummer());
+            for(Lebensmittel lebensmittel : Lebensmittel.getAll(lebensmittelRepository,fach)){
+                System.out.println(lebensmittel.getName());
+            }
         }
     }
 }
