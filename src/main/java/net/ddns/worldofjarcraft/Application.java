@@ -1,6 +1,8 @@
 package net.ddns.worldofjarcraft;
 
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.Einkauf;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.EinkaufRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,20 +25,17 @@ public class Application implements CommandLineRunner {
 
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    private static JdbcTemplate template=null;
+    private EinkaufRepository repo;
 
     public static JdbcTemplate getTemplate() {
-        return template;
+        return null;
     }
 
     @Override
     public void run(String... args) {
-        template = jdbcTemplate;
+        for(Einkauf einkauf : repo.findAll()){
+            System.out.println(einkauf.getLebensmittel());
+        }
 
-        jdbcTemplate.query(
-                "SELECT * FROM Benutzer WHERE ?;", new Object[] { "1" },
-                (rs, RowNum) -> new Benutzer(rs.getString("EMail"), rs.getString("Passwort"))
-        ).forEach(customer -> System.out.println(customer.toString()));
     }
 }

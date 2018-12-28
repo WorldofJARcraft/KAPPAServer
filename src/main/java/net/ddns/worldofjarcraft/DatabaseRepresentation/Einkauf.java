@@ -1,8 +1,18 @@
 package net.ddns.worldofjarcraft.DatabaseRepresentation;
 
+
+import javax.persistence.*;
+
+@Entity
+@Table(name="einkauf")
 public class Einkauf {
+    @Column(name = "Lebensmittel")
     private String Lebensmittel;
-    private Benutzer nutzer;
+    @Column(name = "Benutzer")
+    private String nutzer;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Num")
     private int id;
 
     public String getLebensmittel() {
@@ -14,11 +24,11 @@ public class Einkauf {
     }
 
     public Benutzer getNutzer() {
-        return nutzer;
+        return null;
     }
 
     public void setNutzer(Benutzer nutzer) {
-        this.nutzer = nutzer;
+        this.nutzer = null;
     }
 
     public int getId() {
@@ -31,7 +41,7 @@ public class Einkauf {
     public Einkauf(){}
     public Einkauf(String lebensmittel, Benutzer nutzer, int id) {
         Lebensmittel = lebensmittel;
-        this.nutzer = nutzer;
+        this.nutzer = null;
         this.id = id;
     }
 }
