@@ -4,11 +4,17 @@ import net.ddns.worldofjarcraft.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
-
+@Entity
 public class Benutzer {
+    @Id
+    @Column(name = "EMail")
     private String EMail;
+    @Column(name= "Passwort")
     private String Passwort;
 
     public String getEMail() {
