@@ -33,9 +33,9 @@ public class CreateDeleteTest {
     private BenutzerRepository repository;
     private String createRandomString(int length){
         StringBuilder builder = new StringBuilder();
-        Random random = new SecureRandom();
-        for(int i=0;i<length;i++){
-            builder.append((char)(random.nextInt(61)+65));
+        Random rand = new Random();
+        for(int i=0; i < length;i++){
+            builder.append((char) (rand.nextInt(22)+97));
         }
         return builder.toString();
     }
