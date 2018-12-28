@@ -67,18 +67,28 @@ public class EinkaufController {
     @ResponseBody
     ResponseEntity delete(HttpServletRequest request, @PathVariable int id){
         String user = request.getRemoteUser();
-        System.out.println("Request by "+user);
-        int num = Application.getTemplate().update(
-                "DELETE FROM `Einkauf` WHERE `Einkauf`.`Num` = ?", id);
-        return new ResponseEntity<Number>(num,HttpStatus.ACCEPTED);
+        Einkauf einkauf = repo.findById(id).isPresent() ?  repo.findById(id).get() : null;
+        if(einkauf!=null){
+            if(einkauf.getNutzer().getEMail().equals(user)){
+                repo.delete(einkauf);
+                return new ResponseEntity<String>("",HttpStatus.ACCEPTED);
+            }
+        }
+        return new ResponseEntity<String>("",HttpStatus.NOT_FOUND);
     }
     @RequestMapping(value = "/einkauf/{id}/update",method = RequestMethod.GET)
     @ResponseBody
     ResponseEntity update(HttpServletRequest request, @PathVariable int id, @RequestParam(name="newValue", required = true) String newValue){
         String user = request.getRemoteUser();
         System.out.println("Request by "+user);
-        int num = Application.getTemplate().update(
-                "UPDATE `Einkauf` SET `Lebensmittel` = ? WHERE `Einkauf`.`Num` = ?;", newValue, id);
-        return new ResponseEntity<Number>(num,HttpStatus.ACCEPTED);
+        Einkauf einkauf = repo.findById(id).isPresent() ?  repo.findById(id).get() : null;
+        if(einkauf!=null){
+            if(einkauf.getNutzer().getEMail().equals(user)){
+                einkauf.setLebensmittel(newValue);
+                repo.save(einkauf);
+                return new ResponseEntity<Number>(einkauf.getId(),HttpStatus.ACCEPTED);
+            }
+        }
+        return new ResponseEntity<String>("",HttpStatus.NOT_FOUND);
     }
 }

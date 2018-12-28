@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class Einkauf {
     @Column(name = "Lebensmittel")
     private String Lebensmittel;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "Benutzer")
     private Benutzer nutzer;
     @Id

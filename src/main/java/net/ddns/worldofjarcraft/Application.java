@@ -38,6 +38,7 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... args) {
         for(Einkauf einkauf : repo.findAll()){
+            if(einkauf.getNutzer()!=null)
             System.out.println(einkauf.getNutzer().getEMail());
         }
         System.out.println("Und jetzt alle...");
