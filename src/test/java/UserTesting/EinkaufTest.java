@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.ddns.worldofjarcraft.Application;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Einkauf;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.EinkaufRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringRunner.class)
@@ -31,7 +33,8 @@ import static org.junit.Assert.assertNotEquals;
 public class EinkaufTest {
     @Autowired
     private TestRestTemplate restTemplate;
-
+    @Autowired
+    private EinkaufRepository repository;
     private String createRandomString(int length){
         StringBuilder builder = new StringBuilder();
         Random random = new SecureRandom();
@@ -86,12 +89,13 @@ public class EinkaufTest {
                 restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).getForEntity("/einkauf/"+id+"/update?newValue=Hallo",Integer.class);
         assertEquals(HttpStatus.ACCEPTED, responseEntity.getStatusCode());
         assertNotEquals(responseEntity.getBody(),new Integer(0));
+        assertEquals(repository.findById(id).get().getLebensmittel(),"Hallo");
     }
     private void deleteEinkauf(){
         ResponseEntity<Integer> responseEntity =
                 restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).getForEntity("/einkauf/"+id+"/delete",Integer.class);
         assertEquals(HttpStatus.ACCEPTED, responseEntity.getStatusCode());
-        assertNotEquals(responseEntity.getBody(),new Integer(0));
+        assertFalse(repository.findById(id).isPresent());
     }
 
     @Test

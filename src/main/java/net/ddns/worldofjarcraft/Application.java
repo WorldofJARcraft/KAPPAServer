@@ -30,11 +30,7 @@ public class Application implements CommandLineRunner {
 
     @Autowired
     private BenutzerRepository users;
-
-    public static JdbcTemplate getTemplate() {
-        return null;
-    }
-
+    
     @Override
     public void run(String... args) {
         for(Einkauf einkauf : repo.findAll()){

@@ -40,7 +40,11 @@ public class EinkaufController {
         System.out.println("Request by "+user);
         List<Einkauf> einkaufs = new ArrayList<>();
         for(Einkauf einkauf : repo.findAll()){
-            if(einkauf.getNutzer().getEMail().equals(user)){
+            //remove orphans
+            if(einkauf.getNutzer()==null){
+                repo.delete(einkauf);
+            }
+            else if(einkauf.getNutzer().getEMail().equals(user)){
                 einkaufs.add(einkauf);
             }
         }

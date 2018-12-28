@@ -2,6 +2,7 @@ package UserTesting;
 
 import net.ddns.worldofjarcraft.Application;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.BenutzerRepository;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.SuccessClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,13 +21,16 @@ import java.util.HashMap;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,classes = Application.class)
 public class CreateDeleteTest {
     @Autowired
     private TestRestTemplate restTemplate;
-
+    @Autowired
+    private BenutzerRepository repository;
     private String createRandomString(int length){
         StringBuilder builder = new StringBuilder();
         Random random = new SecureRandom();
@@ -71,6 +75,7 @@ public class CreateDeleteTest {
         assertEquals(HttpStatus.ACCEPTED, responseEntity.getStatusCode());
         assertEquals(test.getEMail(), client.getEMail());
         assertEquals(test.getPasswort(),client.getPasswort());
+        assertTrue(repository.findById(test.getEMail()).isPresent());
     }
 
     private void deleteClient() {
@@ -79,5 +84,6 @@ public class CreateDeleteTest {
         SuccessClass client = responseEntity.getBody();
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("Deleted!", client.getSuccess_message());
+        assertFalse(repository.findById(test.getEMail()).isPresent());
     }
 }

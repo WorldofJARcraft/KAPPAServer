@@ -39,19 +39,9 @@ public class UserManagementController {
     public ResponseEntity createUser(@RequestParam(value = "EMail", required = true) String EMail, @RequestParam(value = "Password", required = true) String Password){
         Benutzer b = new Benutzer(EMail,Password);
         if(Benutzer.getBenutzer(users,b.getEMail())==null){
-
-            KeyHolder holder = new GeneratedKeyHolder();
-            template.update(new PreparedStatementCreator() {
-                @Override
-                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
-                    ps.setString(1, b.getEMail());
-                    ps.setString(2, b.getPasswort());
-                    return ps;
-                }
-            }, holder);
-        //System.out.println("Inserted user "+holder.getKey().intValue());
-        return new ResponseEntity(b,HttpStatus.CREATED);
+            users.save(b);
+            //System.out.println("Inserted user "+holder.getKey().intValue());
+            return new ResponseEntity(b,HttpStatus.CREATED);
         }
         else {
             ErrorClass error = new ErrorClass("User exists!");
@@ -62,34 +52,19 @@ public class UserManagementController {
     public ResponseEntity deleteUser(HttpServletRequest request){
         Benutzer b = Benutzer.getBenutzer(users, request.getUserPrincipal().getName());
         if(b!=null){
-            template.update(new PreparedStatementCreator() {
-                @Override
-                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement ps = connection.prepareStatement(DELETE_SQL, Statement.RETURN_GENERATED_KEYS);
-                    ps.setString(1, b.getEMail());
-                    return ps;
-                }
-            }, new GeneratedKeyHolder());
+            users.delete(b);
             return new ResponseEntity(new SuccessClass("Deleted!"),HttpStatus.OK);
         }
         else {
             return new ResponseEntity(new ErrorClass("User does not exist!"),HttpStatus.NOT_FOUND);
         }
     }
-    private final String UPDATE_SQL = "UPDATE `benutzer` SET `Passwort` = ? WHERE `benutzer`.`EMail` = ?;";
     @RequestMapping("/user/changePassword")
     public ResponseEntity changePassword(HttpServletRequest request, @RequestParam(name = "newPassword") String newPassword){
         Benutzer b = Benutzer.getBenutzer(users,request.getUserPrincipal().getName());
         if(b!=null){
-            template.update(new PreparedStatementCreator() {
-                @Override
-                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement ps = connection.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS);
-                    ps.setString(1, newPassword);
-                    ps.setString(2,b.getEMail());
-                    return ps;
-                }
-            }, new GeneratedKeyHolder());
+            b.setPasswort(newPassword);
+            users.save(b);
             return new ResponseEntity(Benutzer.getBenutzer(users,b.getEMail()),HttpStatus.ACCEPTED);
         }
         else {
