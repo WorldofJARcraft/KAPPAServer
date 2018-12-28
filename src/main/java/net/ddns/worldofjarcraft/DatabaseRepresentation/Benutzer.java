@@ -47,15 +47,14 @@ public class Benutzer {
                 "Customer[EMail=%s, Passwort='%s']",
                 EMail, Passwort);
     }
-    public static List<Benutzer> getAll(){
-        return new ArrayList<>(Application.getTemplate().query(
-                "SELECT * FROM Benutzer WHERE ?;", new Object[]{"1"},
-                (rs, RowNum) -> new Benutzer(rs.getString("EMail"), rs.getString("Passwort"))
-        ));
+    public static List<Benutzer> getAll(BenutzerRepository users){
+        ArrayList<Benutzer> nutzer = new ArrayList<>();
+        for(Benutzer user : users.findAll()){
+            nutzer.add(user);
+        }
+        return nutzer;
     }
-
-    public static Benutzer getBenutzer(String EMail){
-        List<Benutzer> benutzers = new ArrayList<Benutzer>(Application.getTemplate().query("SELECT * FROM Benutzer WHERE EMail=?;", new Object[] {EMail }, (rs, RowNum) -> new Benutzer(rs.getString("EMail"), rs.getString("Passwort"))));
-        return benutzers.isEmpty()?null:benutzers.get(0);
+    public static Benutzer getBenutzer(BenutzerRepository users, String EMail){
+        return users.findById(EMail).isPresent() ? users.findById(EMail).get() : null;
     }
 }

@@ -2,7 +2,10 @@ package net.ddns.worldofjarcraft.Einkauf;
 
 import net.ddns.worldofjarcraft.Application;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.BenutzerRepository;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Einkauf;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.EinkaufRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -24,15 +27,23 @@ import java.util.Map;
 
 @Controller
 public class EinkaufController {
+    @Autowired
+    private EinkaufRepository repo;
+
+    @Autowired
+    private BenutzerRepository users;
+
     @GetMapping("/einkauf")
     @ResponseBody
     ResponseEntity showEinkaeufe(HttpServletRequest request){
         String user = request.getRemoteUser();
         System.out.println("Request by "+user);
-        List<Einkauf> einkaufs = new ArrayList<>(Application.getTemplate().query(
-                "SELECT * FROM einkauf WHERE Benutzer = ?;", new Object[]{user},
-                (rs, RowNum) -> new Einkauf(rs.getString("Lebensmittel"),Benutzer.getBenutzer(rs.getString("Benutzer")),rs.getInt("Num"))
-        ));
+        List<Einkauf> einkaufs = new ArrayList<>();
+        for(Einkauf einkauf : repo.findAll()){
+            if(einkauf.getNutzer().getEMail().equals(user)){
+                einkaufs.add(einkauf);
+            }
+        }
         if(!einkaufs.isEmpty()) return new ResponseEntity<>(einkaufs.toArray(new Einkauf[1]),HttpStatus.OK);
         else
             return new ResponseEntity<>(new Einkauf[1],HttpStatus.NO_CONTENT);
@@ -41,18 +52,16 @@ public class EinkaufController {
     @ResponseBody
     ResponseEntity addEinkauf(HttpServletRequest request, @RequestParam(value = "Einkauf") String einkauf){
         String user = request.getRemoteUser();
-        System.out.println("Request by "+user);
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(Application.getTemplate());
-        jdbcInsert.withTableName("einkauf").usingGeneratedKeyColumns(
-                "Num");
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("Lebensmittel", einkauf);
-        parameters.put("Benutzer", user);
-        // execute insert
-        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(
-                parameters));
-        // convert Number to Int using ((Number) key).intValue()
-            return new ResponseEntity<String>(""+key,HttpStatus.CREATED);
+        Benutzer benutzer = users.findById(user).isPresent() ? users.findById(user).get() : null;
+        if(benutzer != null) {
+            System.out.println("Request by " + user);
+            Einkauf newEinkauf = new Einkauf(einkauf,benutzer);
+            repo.save(newEinkauf);
+            Number key = newEinkauf.getId();
+            // convert Number to Int using ((Number) key).intValue()
+            return new ResponseEntity<String>("" + key, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
     }
     @RequestMapping(value = "/einkauf/{id}/delete",method = RequestMethod.GET)
     @ResponseBody

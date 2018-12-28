@@ -1,6 +1,7 @@
 package net.ddns.worldofjarcraft.UserManagement;
 
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.BenutzerRepository;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.ErrorClass;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.SuccessClass;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,15 @@ import java.util.concurrent.atomic.AtomicLong;
 public class UserManagementController {
     private final String INSERT_SQL = "INSERT INTO benutzer(EMail, Passwort) values (?,?);";
     private final String DELETE_SQL = "DELETE FROM benutzer WHERE EMail=?;";
+
+    @Autowired
+    private BenutzerRepository users;
     @Autowired
     JdbcTemplate template;
     @RequestMapping("/user/create")
     public ResponseEntity createUser(@RequestParam(value = "EMail", required = true) String EMail, @RequestParam(value = "Password", required = true) String Password){
         Benutzer b = new Benutzer(EMail,Password);
-        if(Benutzer.getBenutzer(b.getEMail())==null){
+        if(Benutzer.getBenutzer(users,b.getEMail())==null){
 
             KeyHolder holder = new GeneratedKeyHolder();
             template.update(new PreparedStatementCreator() {
@@ -56,7 +60,7 @@ public class UserManagementController {
     }
     @RequestMapping("/user/delete")
     public ResponseEntity deleteUser(HttpServletRequest request){
-        Benutzer b = Benutzer.getBenutzer(request.getUserPrincipal().getName());
+        Benutzer b = Benutzer.getBenutzer(users, request.getUserPrincipal().getName());
         if(b!=null){
             template.update(new PreparedStatementCreator() {
                 @Override
@@ -75,7 +79,7 @@ public class UserManagementController {
     private final String UPDATE_SQL = "UPDATE `benutzer` SET `Passwort` = ? WHERE `benutzer`.`EMail` = ?;";
     @RequestMapping("/user/changePassword")
     public ResponseEntity changePassword(HttpServletRequest request, @RequestParam(name = "newPassword") String newPassword){
-        Benutzer b = Benutzer.getBenutzer(request.getUserPrincipal().getName());
+        Benutzer b = Benutzer.getBenutzer(users,request.getUserPrincipal().getName());
         if(b!=null){
             template.update(new PreparedStatementCreator() {
                 @Override
@@ -86,7 +90,7 @@ public class UserManagementController {
                     return ps;
                 }
             }, new GeneratedKeyHolder());
-            return new ResponseEntity(Benutzer.getBenutzer(b.getEMail()),HttpStatus.ACCEPTED);
+            return new ResponseEntity(Benutzer.getBenutzer(users,b.getEMail()),HttpStatus.ACCEPTED);
         }
         else {
             return new ResponseEntity(new ErrorClass("User does not exist!"),HttpStatus.NOT_FOUND);

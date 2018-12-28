@@ -1,6 +1,8 @@
 package net.ddns.worldofjarcraft.Security;
 
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.BenutzerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,13 +15,15 @@ import java.util.ArrayList;
 public class CustomAuthenticationProvider
         implements AuthenticationProvider {
 
+    @Autowired
+    private BenutzerRepository users;
     @Override
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
 
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
-        Benutzer b = Benutzer.getBenutzer(name);
+        Benutzer b = Benutzer.getBenutzer(users,name);
         if (b!=null && b.getPasswort().equals(password)) {
 
             // use the credentials

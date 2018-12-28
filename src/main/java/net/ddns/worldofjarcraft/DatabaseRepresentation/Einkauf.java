@@ -40,6 +40,12 @@ public class Einkauf {
         this.id = id;
     }
     public Einkauf(){}
+
+    public Einkauf(String lebensmittel, Benutzer nutzer) {
+        Lebensmittel = lebensmittel;
+        this.nutzer = nutzer;
+    }
+
     public Einkauf(String lebensmittel, Benutzer nutzer, int id) {
         Lebensmittel = lebensmittel;
         this.nutzer = nutzer;

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.BenutzerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,15 +26,17 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class UserController {
 
+    @Autowired
+    private  BenutzerRepository users;
     @RequestMapping(path = "/user", method = RequestMethod.GET)
     public ResponseEntity listUser(HttpServletRequest request) {
         System.out.println("Request by "+request.getUserPrincipal().getName());
-        return new ResponseEntity  (Benutzer.getAll(),HttpStatus.OK);
+        return new ResponseEntity  (Benutzer.getAll(users),HttpStatus.OK);
     }
 
     @RequestMapping(path = "/user/{mail}", method = RequestMethod.GET)
     public ResponseEntity listUser(@PathVariable(value = "mail") String mail) {
-        return new ResponseEntity(Benutzer.getAll().stream().filter(user -> user.getEMail().equals(mail)).findFirst().orElse(null), HttpStatus.OK);
+        return new ResponseEntity(Benutzer.getAll(users).stream().filter(user -> user.getEMail().equals(mail)).findFirst().orElse(null), HttpStatus.OK);
 
     }
 
