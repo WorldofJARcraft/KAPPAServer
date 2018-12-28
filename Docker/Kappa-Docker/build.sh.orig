@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 cd ../..
+<<<<<<< Updated upstream
 cp ./src/main/resources/application.properties ./src/main/resources/application.properties.old
 cp ./src/main/resources/docker.properties ./src/main/resources/application.properties
-mvn -Dmaven.test.skip=true clean package
+mvn clean package
 mv ./src/main/resources/application.properties.old ./src/main/resources/application.properties
+cp ./target/*.jar ./Docker/Kappa-Docker/kappa.jar
+docker build -t kappa ./kappa.Dockerfile
+=======
+mvn -Dmaven.test.skip=true clean package
 cp ./target/kappa_server*.jar ./Docker/Kappa-Docker/kappa.jar
 cd Docker/Kappa-Docker
 sudo docker build -t kappa .
+>>>>>>> Stashed changes
