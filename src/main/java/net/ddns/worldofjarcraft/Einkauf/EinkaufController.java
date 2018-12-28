@@ -95,4 +95,17 @@ public class EinkaufController {
         }
         return new ResponseEntity<String>("",HttpStatus.NOT_FOUND);
     }
+    @RequestMapping(value = "/einkauf/{id}/get",method = RequestMethod.GET)
+    @ResponseBody
+    ResponseEntity getEinkauf(HttpServletRequest request, @PathVariable int id){
+        String user = request.getRemoteUser();
+        System.out.println("Request by "+user);
+        Einkauf einkauf = repo.findById(id).isPresent() ?  repo.findById(id).get() : null;
+        if(einkauf!=null){
+            if(einkauf.getNutzer().getEMail().equals(user)){
+                return new ResponseEntity<>(einkauf,HttpStatus.ACCEPTED);
+            }
+        }
+        return new ResponseEntity<String>("",HttpStatus.NOT_FOUND);
+    }
 }

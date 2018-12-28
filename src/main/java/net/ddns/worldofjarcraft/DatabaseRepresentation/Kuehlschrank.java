@@ -2,6 +2,8 @@ package net.ddns.worldofjarcraft.DatabaseRepresentation;
 
 import javax.annotation.Generated;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Kuehlschrank {
@@ -61,6 +63,16 @@ public class Kuehlschrank {
 
     public Kuehlschrank() {
 
+    }
+
+    public static List<Kuehlschrank> getAll(KuehlschrankRepository repository, Benutzer benutzer){
+        ArrayList<Kuehlschrank> kuehlschranks = new ArrayList<>();
+        for(Kuehlschrank schrank : repository.findAll()){
+            if(schrank.getBesitzer().equals(benutzer)){
+                kuehlschranks.add(schrank);
+            }
+        }
+        return kuehlschranks;
     }
 
     @Override

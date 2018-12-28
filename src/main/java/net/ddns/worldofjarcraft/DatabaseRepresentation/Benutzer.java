@@ -57,4 +57,12 @@ public class Benutzer {
     public static Benutzer getBenutzer(BenutzerRepository users, String EMail){
         return users.findById(EMail).isPresent() ? users.findById(EMail).get() : null;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Benutzer)){
+            return false;
+        }
+        Benutzer benutzer = (Benutzer) obj;
+        return benutzer.getEMail().equals(this.getEMail());
+    }
 }
