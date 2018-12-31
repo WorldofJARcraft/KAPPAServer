@@ -17,8 +17,12 @@ public class Benutzer {
     @Column(name= "Passwort")
     private String Passwort;
 
+    /**
+     *
+     * @return Name of the user in lower case.
+     */
     public String getEMail() {
-        return EMail;
+        return EMail.toLowerCase();
     }
 
     public String getPasswort() {
