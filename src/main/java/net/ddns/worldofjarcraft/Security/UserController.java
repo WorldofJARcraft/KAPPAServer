@@ -36,7 +36,8 @@ public class UserController {
 
     @RequestMapping(path = "/user/{mail}", method = RequestMethod.GET)
     public ResponseEntity listUser(@PathVariable(value = "mail") String mail) {
-        return new ResponseEntity(Benutzer.getAll(users).stream().filter(user -> user.getEMail().equals(mail)).findFirst().orElse(null), HttpStatus.OK);
+        Benutzer b = Benutzer.getAll(users).stream().filter(user -> user.getEMail().equals(mail)).findFirst().orElse(null);
+        return new ResponseEntity(b != null, HttpStatus.OK);
 
     }
 

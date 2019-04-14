@@ -75,10 +75,10 @@ public class EinkaufController {
         if(einkauf!=null){
             if(einkauf.getNutzer().getEMail().equals(user)){
                 repo.delete(einkauf);
-                return new ResponseEntity<String>("",HttpStatus.ACCEPTED);
+                return new ResponseEntity<>(true,HttpStatus.ACCEPTED);
             }
         }
-        return new ResponseEntity<String>("",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(false,HttpStatus.NOT_FOUND);
     }
     @RequestMapping(value = "/einkauf/{id}/update",method = RequestMethod.GET)
     @ResponseBody

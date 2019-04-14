@@ -92,8 +92,8 @@ public class EinkaufTest {
         assertEquals(repository.findById(id).get().getLebensmittel(),"Hallo");
     }
     private void deleteEinkauf(){
-        ResponseEntity<Integer> responseEntity =
-                restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).getForEntity("/einkauf/"+id+"/delete",Integer.class);
+        ResponseEntity<Boolean> responseEntity =
+                restTemplate.withBasicAuth(test.getEMail(),test.getPasswort()).getForEntity("/einkauf/"+id+"/delete",Boolean.class);
         assertEquals(HttpStatus.ACCEPTED, responseEntity.getStatusCode());
         assertFalse(repository.findById(id).isPresent());
     }

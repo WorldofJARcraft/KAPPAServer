@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,11 +42,11 @@ public class UserManagementController {
         if(Benutzer.getBenutzer(users,b.getEMail())==null){
             users.save(b);
             //System.out.println("Inserted user "+holder.getKey().intValue());
-            return new ResponseEntity(b,HttpStatus.CREATED);
+            return new ResponseEntity(true,HttpStatus.CREATED);
         }
         else {
             ErrorClass error = new ErrorClass("User exists!");
-            return new ResponseEntity(error,HttpStatus.CONFLICT);
+            return new ResponseEntity(false,HttpStatus.CONFLICT);
         }
     }
     @RequestMapping("/user/delete")

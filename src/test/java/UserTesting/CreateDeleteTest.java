@@ -47,21 +47,20 @@ public class CreateDeleteTest {
         test = new Benutzer(createRandomString(rand.nextInt(10)+2),createRandomString(rand.nextInt(10)));
         System.out.println("Testing with User "+test.toString());
     }
-    public static ResponseEntity<Benutzer> createClientWithCredentials( TestRestTemplate restTemplate, String user, String pw) {
+    public static ResponseEntity<Boolean> createClientWithCredentials( TestRestTemplate restTemplate, String user, String pw) {
 
-        ResponseEntity<Benutzer> responseEntity =
-                restTemplate.getForEntity("/user/create?EMail="+user+"&Password="+pw,Benutzer.class);
+        ResponseEntity<Boolean> responseEntity =
+                restTemplate.getForEntity("/user/create?EMail="+user+"&Password="+pw,Boolean.class);
 
         return responseEntity;
 
     }
     @Test
     public void createClient() {
-        ResponseEntity<Benutzer> responseEntity = createClientWithCredentials(restTemplate, test.getEMail(),test.getPasswort());
+        ResponseEntity<Boolean> responseEntity = createClientWithCredentials(restTemplate, test.getEMail(),test.getPasswort());
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-        Benutzer client = responseEntity.getBody();
-        assertEquals(test.getEMail(), client.getEMail());
-        assertEquals(test.getPasswort(),client.getPasswort());
+        Boolean result = responseEntity.getBody();
+        assertEquals(true,result);
         updateClient();
         deleteClient();
     }
