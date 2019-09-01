@@ -29,7 +29,7 @@ public class SchrankController {
         ErrorClass error = new ErrorClass("Unauthorized!");
         return new ResponseEntity<ErrorClass>(error,HttpStatus.UNAUTHORIZED);
     }
-    @RequestMapping(value = "/schrank/new",method = RequestMethod.GET)
+    @RequestMapping(value = "/schrank/new",method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity addKuehlschrank(HttpServletRequest request, @Param(value = "name") String name, @Param(value = "faecher") int faecher){
         String user = request.getRemoteUser();
@@ -43,7 +43,7 @@ public class SchrankController {
         return new ResponseEntity<ErrorClass>(error,HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(value = "/schrank/{id}/delete",method = RequestMethod.GET)
+    @RequestMapping(value = "/schrank/{id}/delete",method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity deleteSchrank(HttpServletRequest request, @PathVariable int id){
         String user = request.getRemoteUser();
@@ -59,7 +59,7 @@ public class SchrankController {
         return new ResponseEntity<>(error,HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(value = "/schrank/{id}/update",method = RequestMethod.GET)
+    @RequestMapping(value = "/schrank/{id}/update",method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity updateSchrank(HttpServletRequest request, @PathVariable int id, @Param(value = "name") String name, @Param(value = "faecher") int faecher){
         String user = request.getRemoteUser();

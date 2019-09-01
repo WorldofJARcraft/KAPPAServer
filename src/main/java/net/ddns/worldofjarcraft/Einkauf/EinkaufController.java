@@ -52,7 +52,7 @@ public class EinkaufController {
         else
             return new ResponseEntity<>(new Einkauf[1],HttpStatus.NO_CONTENT);
     }
-    @RequestMapping(value = "/einkauf/create",method = RequestMethod.GET)
+    @RequestMapping(value = "/einkauf/create",method = RequestMethod.POST)
     @ResponseBody
     ResponseEntity addEinkauf(HttpServletRequest request, @RequestParam(value = "Einkauf") String einkauf){
         String user = request.getRemoteUser();
@@ -67,7 +67,7 @@ public class EinkaufController {
         }
         return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
     }
-    @RequestMapping(value = "/einkauf/{id}/delete",method = RequestMethod.GET)
+    @RequestMapping(value = "/einkauf/{id}/delete",method = RequestMethod.DELETE)
     @ResponseBody
     ResponseEntity delete(HttpServletRequest request, @PathVariable int id){
         String user = request.getRemoteUser();
@@ -80,7 +80,7 @@ public class EinkaufController {
         }
         return new ResponseEntity<>(false,HttpStatus.NOT_FOUND);
     }
-    @RequestMapping(value = "/einkauf/{id}/update",method = RequestMethod.GET)
+    @RequestMapping(value = "/einkauf/{id}/update",method = RequestMethod.POST)
     @ResponseBody
     ResponseEntity update(HttpServletRequest request, @PathVariable int id, @RequestParam(name="newValue", required = true) String newValue){
         String user = request.getRemoteUser();

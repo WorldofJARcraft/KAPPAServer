@@ -20,7 +20,7 @@ public class FachController {
 
     @Autowired
     private FachRepository faecher;
-    @RequestMapping(value = "/schrank/{id}/newFach",method = RequestMethod.GET)
+    @RequestMapping(value = "/schrank/{id}/newFach",method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity addFach(HttpServletRequest request, @PathVariable int id, @RequestParam String name){
         String user = request.getRemoteUser();
@@ -52,7 +52,7 @@ public class FachController {
         return new ResponseEntity<ErrorClass>(error,HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(value = "/schrank/{id}/{fachID}/delete",method = RequestMethod.GET)
+    @RequestMapping(value = "/schrank/{id}/{fachID}/delete",method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity deleteSchrank(HttpServletRequest request, @PathVariable int id, @PathVariable int fachID){
         String user = request.getRemoteUser();
@@ -71,7 +71,7 @@ public class FachController {
         return new ResponseEntity<ErrorClass>(error,HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(value = "/schrank/{id}/{fachID}/update",method = RequestMethod.GET)
+    @RequestMapping(value = "/schrank/{id}/{fachID}/update",method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity updateFach(HttpServletRequest request, @PathVariable int id, @PathVariable int fachID, @RequestParam(name = "newName") String newName){
         String user = request.getRemoteUser();

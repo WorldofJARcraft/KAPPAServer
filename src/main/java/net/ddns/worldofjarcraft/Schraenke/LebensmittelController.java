@@ -24,7 +24,7 @@ public class LebensmittelController {
     @Autowired
     private LebensmittelRepository lebensmittelRepository;
 
-    @RequestMapping(value = "/schrank/{id}/{fachID}/newLM",method = RequestMethod.GET)
+    @RequestMapping(value = "/schrank/{id}/{fachID}/newLM",method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity newLM(HttpServletRequest request, @PathVariable int id, @PathVariable int fachID, @RequestParam String name, @RequestParam String Anzahl, @RequestParam Long haltbarkeit, @RequestParam Long eingelagert){
         String user = request.getRemoteUser();
@@ -62,7 +62,7 @@ public class LebensmittelController {
         return new ResponseEntity<ErrorClass>(error,HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(value = "/schrank/{id}/{fachID}/{lebensmittelID}/delete",method = RequestMethod.GET)
+    @RequestMapping(value = "/schrank/{id}/{fachID}/{lebensmittelID}/delete",method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity deleteLM(HttpServletRequest request, @PathVariable int id, @PathVariable int fachID, @PathVariable int lebensmittelID){
         String user = request.getRemoteUser();
@@ -84,7 +84,7 @@ public class LebensmittelController {
         return new ResponseEntity<ErrorClass>(error,HttpStatus.UNAUTHORIZED);
     }
 
-    @RequestMapping(value = "/schrank/{id}/{fachID}/{lebensmittelID}/update",method = RequestMethod.GET)
+    @RequestMapping(value = "/schrank/{id}/{fachID}/{lebensmittelID}/update",method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity updateLM(HttpServletRequest request, @PathVariable int id, @PathVariable int fachID, @PathVariable int lebensmittelID, @RequestParam String name, @RequestParam String Anzahl, @RequestParam Long haltbarkeit, @RequestParam Long eingelagert){
         String user = request.getRemoteUser();
