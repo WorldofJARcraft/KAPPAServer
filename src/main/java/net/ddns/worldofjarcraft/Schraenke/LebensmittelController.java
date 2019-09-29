@@ -145,4 +145,24 @@ public class LebensmittelController {
         ErrorClass error = new ErrorClass("Unauthorized!");
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
+
+    @RequestMapping(value = "/lebensmittel/getAll", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity getAllLM(HttpServletRequest request) {
+        String user = request.getRemoteUser();
+        Benutzer benutzer = users.findById(user).isPresent() ? users.findById(user).get() : null;
+        if (benutzer != null) {
+            Set<Lebensmittel> results = new HashSet<>();
+
+            for (Lebensmittel lm : lebensmittelRepository.findAll()) {
+                if(lm.getBesitzer().equals(benutzer)){
+                    results.add(lm);
+                }
+
+            }
+            return new ResponseEntity<>(results, HttpStatus.OK);
+        }
+        ErrorClass error = new ErrorClass("Unauthorized!");
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
 }
