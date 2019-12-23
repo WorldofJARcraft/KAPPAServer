@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.DriverManager;
 
 @Configuration
 @EnableTransactionManagement
@@ -27,6 +30,20 @@ public class DatabaseConfiguration {
     @Value("${spring.datasource.password}") String pw;
     @Bean(name="dataSource")
     public DataSource getDataSource(){
+        if(System.getenv("DATABASE_URL") != null && !System.getenv("DATABASE_URL").equals("")){
+            URI dbUri = null;
+            try {
+                dbUri = new URI(System.getenv("DATABASE_URL"));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            user = dbUri.getUserInfo().split(":")[0];
+            pw = dbUri.getUserInfo().split(":")[1];
+            url = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
+            System.out.println("Using heroku url "+url);
+        }
         return DataSourceBuilder.create()
                 .username(user)
                 .password(pw)
