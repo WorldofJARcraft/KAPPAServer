@@ -22,7 +22,7 @@ public class Benutzer {
      * @return Name of the user in lower case.
      */
     public String getEMail() {
-        return EMail.toLowerCase();
+        return EMail;
     }
 
     public String getPasswort() {
