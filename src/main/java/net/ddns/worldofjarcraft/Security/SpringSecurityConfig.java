@@ -28,6 +28,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/user/create").permitAll()
+                .antMatchers("/ping").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()

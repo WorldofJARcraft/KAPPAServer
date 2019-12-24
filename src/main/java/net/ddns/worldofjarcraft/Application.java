@@ -36,6 +36,7 @@ public class Application implements CommandLineRunner {
     private LebensmittelRepository lebensmittelRepository;
     @Override
     public void run(String... args) {
+        //GDPR
         /*for(Einkauf einkauf : repo.findAll()){
             if(einkauf.getNutzer()!=null)
             System.out.println(einkauf.getNutzer().getEMail());
