@@ -56,6 +56,7 @@ public class LebensmittelController {
                 Fach fach = faecher.findById(fachID).orElse(null);
                 if (fach != null && fach.getKuehlschrank().equals(schrank)) {
                     List<Lebensmittel> lm = Lebensmittel.getAll(lebensmittelRepository, fach);
+                    lm = lm.stream().sorted(new StringComparator()).collect(Collectors.toList());
                     return new ResponseEntity<>(lm, HttpStatus.OK);
                 }
             }
