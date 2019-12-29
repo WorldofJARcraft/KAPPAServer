@@ -36,7 +36,8 @@ public class Application implements CommandLineRunner {
     private LebensmittelRepository lebensmittelRepository;
     @Override
     public void run(String... args) {
-        for(Einkauf einkauf : repo.findAll()){
+        //GDPR
+        /*for(Einkauf einkauf : repo.findAll()){
             if(einkauf.getNutzer()!=null)
             System.out.println(einkauf.getNutzer().getEMail());
         }
@@ -51,6 +52,6 @@ public class Application implements CommandLineRunner {
             for(Lebensmittel lebensmittel : Lebensmittel.getAll(lebensmittelRepository,fach)){
                 System.out.println(lebensmittel.getName());
             }
-        }
+        }*/
     }
 }

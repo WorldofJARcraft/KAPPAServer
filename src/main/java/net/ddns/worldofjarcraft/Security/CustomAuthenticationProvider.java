@@ -23,7 +23,9 @@ public class CustomAuthenticationProvider
 
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
+
         Benutzer b = Benutzer.getBenutzer(users,name);
+        System.out.println("Log in: "+name+":"+password+" found "+b);
         if (b!=null && b.getPasswort().equals(password)) {
 
             // use the credentials
