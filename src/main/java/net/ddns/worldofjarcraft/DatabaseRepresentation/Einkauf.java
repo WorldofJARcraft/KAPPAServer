@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Table(name="einkauf")
 public class Einkauf {
     @Column(name = "Lebensmittel")
-    private String Lebensmittel;
+    private String lebensmittel;
     @ManyToOne
     @JoinColumn(name = "Benutzer")
     private Benutzer nutzer;
@@ -17,11 +17,11 @@ public class Einkauf {
     private int id;
 
     public String getLebensmittel() {
-        return Lebensmittel;
+        return lebensmittel;
     }
 
     public void setLebensmittel(String lebensmittel) {
-        Lebensmittel = lebensmittel;
+        lebensmittel = lebensmittel;
     }
 
     public Benutzer getNutzer() {
@@ -42,12 +42,12 @@ public class Einkauf {
     public Einkauf(){}
 
     public Einkauf(String lebensmittel, Benutzer nutzer) {
-        Lebensmittel = lebensmittel;
+        lebensmittel = lebensmittel;
         this.nutzer = nutzer;
     }
 
     public Einkauf(String lebensmittel, Benutzer nutzer, int id) {
-        Lebensmittel = lebensmittel;
+        lebensmittel = lebensmittel;
         this.nutzer = nutzer;
         this.id = id;
     }
