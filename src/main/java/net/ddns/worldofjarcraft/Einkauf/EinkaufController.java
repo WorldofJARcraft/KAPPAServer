@@ -39,7 +39,7 @@ public class EinkaufController {
         String user = request.getRemoteUser();
         System.out.println("Request by "+user);
         List<Einkauf> einkaufs = new ArrayList<>();
-        for(Einkauf einkauf : repo.findAll()){
+        for(Einkauf einkauf : repo.findAllByOrderByLebensmittel()){
             //remove orphans
             if(einkauf.getNutzer()==null){
                 repo.delete(einkauf);

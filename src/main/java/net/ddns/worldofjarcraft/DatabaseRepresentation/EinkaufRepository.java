@@ -7,4 +7,5 @@ import java.util.List;
 
 @Repository
 public interface EinkaufRepository extends CrudRepository<Einkauf, Integer> {
+    public List<Einkauf> findAllByOrderByLebensmittel();
 }

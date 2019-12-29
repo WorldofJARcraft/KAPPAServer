@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface LebensmittelRepository extends CrudRepository<Lebensmittel, Integer> {
-    @Query("select e from Lebensmittel e where name like CONCAT('%',:name,'%') and Besitzer = :userID")
+    @Query("select e from Lebensmittel e where name like CONCAT('%',:name,'%') and Besitzer = :userID ORDER BY Name")
     public Lebensmittel[] searchByName(@Param("name") String name, @Param("userID") Benutzer user);
 }
