@@ -21,7 +21,7 @@ public class Einkauf {
     }
 
     public void setLebensmittel(String lebensmittel) {
-        lebensmittel = lebensmittel;
+        this.lebensmittel = lebensmittel;
     }
 
     public Benutzer getNutzer() {
@@ -42,12 +42,12 @@ public class Einkauf {
     public Einkauf(){}
 
     public Einkauf(String lebensmittel, Benutzer nutzer) {
-        lebensmittel = lebensmittel;
+        this.lebensmittel = lebensmittel;
         this.nutzer = nutzer;
     }
 
     public Einkauf(String lebensmittel, Benutzer nutzer, int id) {
-        lebensmittel = lebensmittel;
+        this.lebensmittel = lebensmittel;
         this.nutzer = nutzer;
         this.id = id;
     }
