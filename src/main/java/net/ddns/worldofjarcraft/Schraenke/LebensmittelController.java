@@ -119,7 +119,7 @@ public class LebensmittelController {
         String user = request.getRemoteUser();
         Benutzer benutzer = users.findById(user).isPresent() ? users.findById(user).get() : null;
         if (benutzer != null) {
-            Set<Lebensmittel> results = new HashSet<>();
+            List<Lebensmittel> results = new LinkedList<>();
 
             for (Lebensmittel lm : lebensmittelRepository.findAll()) {
                 try {
@@ -142,6 +142,7 @@ public class LebensmittelController {
                 }
 
             }
+            results = results.stream().sorted(new StringComparator()).collect(Collectors.toList());
             return new ResponseEntity<>(results, HttpStatus.OK);
         }
         ErrorClass error = new ErrorClass("Unauthorized!");
