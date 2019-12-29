@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class LebensmittelController {
@@ -152,7 +153,7 @@ public class LebensmittelController {
         String user = request.getRemoteUser();
         Benutzer benutzer = users.findById(user).isPresent() ? users.findById(user).get() : null;
         if (benutzer != null) {
-            Set<Lebensmittel> results = new HashSet<>();
+            List<Lebensmittel> results = new LinkedList<>();
 
             for (Lebensmittel lm : lebensmittelRepository.findAll()) {
                 if(lm.getBesitzer().equals(benutzer)){
@@ -160,9 +161,34 @@ public class LebensmittelController {
                 }
 
             }
+            results = results.stream().sorted(new StringComparator()).collect(Collectors.toList());
             return new ResponseEntity<>(results, HttpStatus.OK);
         }
         ErrorClass error = new ErrorClass("Unauthorized!");
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    private class StringComparator  implements Comparator<Lebensmittel> {
+        public int compare(Lebensmittel obj1, Lebensmittel obj2) {
+            if (obj1 == obj2) {
+                return 0;
+            }
+            if (obj1 == null) {
+                return -1;
+            }
+            if (obj2 == null) {
+                return 1;
+            }
+            if (obj1.getName() == obj2.getName()) {
+                return 0;
+            }
+            if (obj1.getName() == null) {
+                return -1;
+            }
+            if (obj2.getName() == null) {
+                return 1;
+            }
+            return obj1.getName().compareTo(obj2.getName());
+        }
     }
 }
