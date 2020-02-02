@@ -145,7 +145,7 @@ public class LebensmittelController {
                         if (lm_decoded.contains(queryDecoded) && lm.getBesitzer().equals(benutzer)) {
                             results.add(lm);
                         }
-                    } else if(lm.getName().contains(query) && lm.getBesitzer().equals(benutzer)){
+                    } else if(lm.getName().contains(queryDecoded) && lm.getBesitzer().equals(benutzer)){
                         results.add(lm);
                     }
 
