@@ -8,7 +8,7 @@ import java.util.List;
 public class Fach {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "lnummer")
     private int lNummer;
 
     @ManyToOne
