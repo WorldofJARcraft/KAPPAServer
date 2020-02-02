@@ -9,7 +9,7 @@ import java.util.List;
 public class Kuehlschrank {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "laufnummer")
     private int laufNummer;
 
     @Column
