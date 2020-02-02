@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,18 @@ public class LebensmittelController {
                 Fach fach = faecher.findById(fachID).orElse(null);
                 if (fach != null && fach.getKuehlschrank().equals(schrank)) {
                     List<Lebensmittel> lm = Lebensmittel.getAll(lebensmittelRepository, fach);
-                    lm = lm.stream().sorted(new StringComparator()).collect(Collectors.toList());
+                    lm = lm.stream().sorted((lm1, lm2) -> {
+                        //make sure to compare decoded names only
+                        String lm1_name = lm1.getName();
+                        if(lm1_name.startsWith("Base64:")){
+                            lm1_name = new String(Base64.getMimeDecoder().decode(lm1_name.split("Base64:")[1]), StandardCharsets.UTF_8);
+                        }
+                        String lm2_name = lm2.getName();
+                        if(lm2_name.startsWith("Base64:")){
+                            lm2_name = new String(Base64.getMimeDecoder().decode(lm2_name.split("Base64:")[1]), StandardCharsets.UTF_8);
+                        }
+                        return lm1_name.compareTo(lm2_name);
+                    }).collect(Collectors.toList());
                     return new ResponseEntity<>(lm, HttpStatus.OK);
                 }
             }

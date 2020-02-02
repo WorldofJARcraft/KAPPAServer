@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
@@ -38,6 +40,12 @@ public class UserManagementController {
     JdbcTemplate template;
     @RequestMapping("/user/create")
     public ResponseEntity createUser(@RequestParam(value = "EMail", required = true) String EMail, @RequestParam(value = "Password", required = true) String Password){
+        if(EMail.startsWith("Base64:")){
+            EMail = new String(Base64.getMimeDecoder().decode(EMail.split("Base64:")[1]), StandardCharsets.UTF_8);
+        }
+        if(Password.startsWith("Base64:")){
+            Password = new String(Base64.getMimeDecoder().decode(Password.split("Base64:")[1]), StandardCharsets.UTF_8);
+        }
         Benutzer b = new Benutzer(EMail,Password);
         if(Benutzer.getBenutzer(users,b.getEMail())==null){
             users.save(b);
