@@ -1,7 +1,11 @@
 package net.ddns.worldofjarcraft.DatabaseRepresentation;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -115,5 +119,28 @@ public class Lebensmittel {
         }
         Lebensmittel mittel = (Lebensmittel) obj;
         return mittel.getNummer() == this.getNummer();
+    }
+
+    public static boolean migrated = false;
+
+    public static String decodeLebensmittelAttribute(String attr){
+        if(attr != null && attr.startsWith("Base64:")){
+            attr = new String(Base64.getMimeDecoder().decode(attr.split("Base64:")[1]), StandardCharsets.UTF_8);
+        }
+        return attr;
+    }
+
+    @Transactional
+    public void migrateAll(LebensmittelRepository repository){
+        List<Lebensmittel> updatedLebensmittel = new LinkedList<>();
+        for(Lebensmittel lebensmittel : repository.findAll()){
+            String lebensmittelName = lebensmittel.getName();
+            String lebensmittelAnzahl = lebensmittel.getName();
+            lebensmittel.setName(decodeLebensmittelAttribute(lebensmittelName));
+            lebensmittel.setAnzahl(decodeLebensmittelAttribute(lebensmittelAnzahl));
+            updatedLebensmittel.add(lebensmittel);
+        }
+        repository.saveAll(updatedLebensmittel);
+        migrated = true;
     }
 }
