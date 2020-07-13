@@ -28,6 +28,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/user/create").permitAll()
+                .antMatchers("/user/requestReset").permitAll()
+                .antMatchers("/user/doReset").permitAll()
                 .antMatchers("/ping").permitAll()
                 .anyRequest().authenticated()
                 .and()

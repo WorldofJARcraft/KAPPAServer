@@ -1,41 +1,29 @@
 package net.ddns.worldofjarcraft.UserManagement;
 
-import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
-import net.ddns.worldofjarcraft.DatabaseRepresentation.BenutzerRepository;
-import net.ddns.worldofjarcraft.DatabaseRepresentation.ErrorClass;
-import net.ddns.worldofjarcraft.DatabaseRepresentation.SuccessClass;
+import lombok.extern.log4j.Log4j2;
+import lombok.val;
+import net.ddns.worldofjarcraft.DatabaseRepresentation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
+@Log4j2
 public class UserManagementController {
     private final String INSERT_SQL = "INSERT INTO benutzer(EMail, Passwort) values (?,?);";
     private final String DELETE_SQL = "DELETE FROM benutzer WHERE EMail=?;";
 
     @Autowired
     private BenutzerRepository users;
+
+    @Autowired
+    private PasswordResetRepository resetRepository;
     @Autowired
     JdbcTemplate template;
     @RequestMapping("/user/create")
@@ -79,5 +67,47 @@ public class UserManagementController {
         else {
             return new ResponseEntity(new ErrorClass("User does not exist!"),HttpStatus.NOT_FOUND);
         }
+    }
+    @GetMapping("/user/requestReset")
+    public ResponseEntity<Object> requestPasswordChange(@RequestParam String email, @RequestParam String newPassword){
+        val respectiveUser = Benutzer.getBenutzer(users, email);
+        if(respectiveUser != null){
+            try {
+                new PasswordResetRequest().createAndNotifyUser(respectiveUser, newPassword, resetRepository);
+            } catch (Exception e){
+                log.error(e);
+                return new ResponseEntity<>(new ErrorClass("Internal error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>("", HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ErrorClass("User unknown"), HttpStatus.NOT_FOUND);
+    }
+    @GetMapping("/user/doReset")
+    public ResponseEntity<Object> resetPassword(@RequestParam int nonce, @RequestParam String email){
+        val respectiveUser = Benutzer.getBenutzer(users, email);
+        if(respectiveUser != null){
+            try {
+                val resetRequest = resetRepository.getAllByBesitzerAndNonce(respectiveUser, nonce);
+                PasswordResetRequest newest = null;
+                for(val request : resetRequest){
+                    if(newest == null || newest.getTime() < request.getTime()){
+                        newest = request;
+                    }
+                }
+                if(newest == null){
+                    return new ResponseEntity<>(new ErrorClass("No reset request found..."), HttpStatus.NOT_FOUND);
+                }
+                else{
+                    respectiveUser.setPasswort(newest.getPassword());
+                    users.save(respectiveUser);
+
+                    return new ResponseEntity<>("OK", HttpStatus.OK);
+                }
+            } catch (Exception e){
+                log.error(e);
+                return new ResponseEntity<>(new ErrorClass("Internal error"), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>(new ErrorClass("User unknown"), HttpStatus.NOT_FOUND);
     }
 }
