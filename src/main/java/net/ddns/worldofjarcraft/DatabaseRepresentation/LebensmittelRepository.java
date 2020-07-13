@@ -9,8 +9,13 @@ import java.util.List;
 
 @Repository
 public interface LebensmittelRepository extends CrudRepository<Lebensmittel, Integer> {
-    @Query("select e from Lebensmittel e where name like CONCAT('%',:name,'%') and Besitzer = :userID ORDER BY Name")
+    @Query("select e from Lebensmittel e where lower( name ) like lower ( CONCAT('%',:name,'%') ) and Besitzer = :userID ORDER BY Name")
     public List<Lebensmittel> searchByName(@Param("name") String name, @Param("userID") Benutzer user);
+
+    @Query("select count(e) from Lebensmittel e where name like 'Base64:%' or anzahl like 'Base64:%'")
+    public int getUnmigrated();
+
+
     @Query("select e from Lebensmittel e where e.Besitzer=:besitzer and e.Fach=:fach order by name")
     public List<Lebensmittel> getAllByBesitzerIsAndFachIsOrderByName(Benutzer besitzer, Fach fach);
 

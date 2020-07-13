@@ -51,6 +51,7 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... args) {
         //GDPR
+        new Lebensmittel().checkMigrated(lebensmittelRepository);
         /*for(Einkauf einkauf : repo.findAll()){
             if(einkauf.getNutzer()!=null)
             System.out.println(einkauf.getNutzer().getEMail());

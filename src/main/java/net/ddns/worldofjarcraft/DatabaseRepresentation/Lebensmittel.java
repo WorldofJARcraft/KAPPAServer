@@ -1,5 +1,8 @@
 package net.ddns.worldofjarcraft.DatabaseRepresentation;
 
+import lombok.extern.log4j.Log4j2;
+import lombok.val;
+
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
@@ -9,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@Log4j2
 public class Lebensmittel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -142,5 +146,10 @@ public class Lebensmittel {
         }
         repository.saveAll(updatedLebensmittel);
         migrated = true;
+    }
+
+    public void checkMigrated(LebensmittelRepository repository){
+        migrated = repository.getUnmigrated() == 0;
+        log.info("Migrated: "+migrated);
     }
 }
