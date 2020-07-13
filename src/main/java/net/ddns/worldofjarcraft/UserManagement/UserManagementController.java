@@ -78,7 +78,7 @@ public class UserManagementController {
                 log.error(e);
                 return new ResponseEntity<>(new ErrorClass("Internal error"), HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            return new ResponseEntity<>("", HttpStatus.OK);
+            return new ResponseEntity<>("OK", HttpStatus.OK);
         }
         return new ResponseEntity<>(new ErrorClass("User unknown"), HttpStatus.NOT_FOUND);
     }
