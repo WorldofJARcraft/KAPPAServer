@@ -128,7 +128,13 @@ public class Lebensmittel {
     public static boolean migrated = false;
 
     public static String decodeLebensmittelAttribute(String attr){
-        if(attr != null && attr.startsWith("Base64:")){
+        if(attr == null){
+            return null;
+        }
+        if(attr.equals("Base64:")){
+            return "";
+        }
+        if(attr.startsWith("Base64:")){
             attr = new String(Base64.getMimeDecoder().decode(attr.split("Base64:")[1]), StandardCharsets.UTF_8);
         }
         return attr;
@@ -139,7 +145,7 @@ public class Lebensmittel {
         List<Lebensmittel> updatedLebensmittel = new LinkedList<>();
         for(Lebensmittel lebensmittel : repository.findAll()){
             String lebensmittelName = lebensmittel.getName();
-            String lebensmittelAnzahl = lebensmittel.getName();
+            String lebensmittelAnzahl = lebensmittel.getAnzahl();
             lebensmittel.setName(decodeLebensmittelAttribute(lebensmittelName));
             lebensmittel.setAnzahl(decodeLebensmittelAttribute(lebensmittelAnzahl));
             updatedLebensmittel.add(lebensmittel);
