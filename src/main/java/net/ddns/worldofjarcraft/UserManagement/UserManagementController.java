@@ -95,13 +95,24 @@ public class UserManagementController {
                     }
                 }
                 if(newest == null){
-                    return new ResponseEntity<>(new ErrorClass("No reset request found..."), HttpStatus.NOT_FOUND);
+
+                    log.warn("User "+respectiveUser.getEMail()+" tried to reset their password, but did not request it... ");
+                    return new ResponseEntity<>("Passwortwiederherstellung wurde nicht angefordert.", HttpStatus.NOT_FOUND);
                 }
                 else{
-                    respectiveUser.setPasswort(newest.getPassword());
-                    users.save(respectiveUser);
-
-                    return new ResponseEntity<>("OK", HttpStatus.OK);
+                    //not usable any more in all cases
+                    resetRepository.delete(newest);
+                    //to prevent replay attacks, only allow reset during 1 hour
+                    if((System.currentTimeMillis() - newest.getTime()) < 3600000) {
+                        respectiveUser.setPasswort(newest.getPassword());
+                        users.save(respectiveUser);
+                        log.info("User "+respectiveUser.getEMail()+" successfully reset their password!");
+                        return new ResponseEntity<>("OK", HttpStatus.OK);
+                    }
+                    else{
+                        log.warn("User "+respectiveUser.getEMail()+" tried to reset their password using a timed-out link");
+                        return new ResponseEntity<>("Link ist abgelaufen - bitte neu anfordern",HttpStatus.OK);
+                    }
                 }
             } catch (Exception e){
                 log.error(e);
