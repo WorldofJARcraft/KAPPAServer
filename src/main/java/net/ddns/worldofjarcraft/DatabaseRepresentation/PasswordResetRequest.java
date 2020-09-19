@@ -52,10 +52,11 @@ public class PasswordResetRequest {
         Email from = new Email("noreply@kappa-server-eu.herokuapp.com");
         String subject = "KAPPA Passwort-Reset";
         Email to = new Email(target.getEMail());
-        Content content = new Content("text/HTML", "Um das Passwort zur&uuml;ckzusetzen, bitte folgenden Link in einem Browser &ouml;ffnen:  \n<a href=\"https://kappa-server-eu.herokuapp.com/user/doReset?email="+target.getEMail()+"&nonce="+nonce+"\">https://kappa-server-eu.herokuapp.com/user/doReset?email="+target.getEMail()+"&nonce="+nonce+"</a>");
+        Content content = new Content("text/HTML", "Um das Passwort zur&uuml;ckzusetzen, bitte folgenden Link innerhalb einer Stunde in einem Browser &ouml;ffnen:  \n<a href=\"https://kappa-server-eu.herokuapp.com/user/doReset?email="+target.getEMail()+"&nonce="+nonce+"\">https://kappa-server-eu.herokuapp.com/user/doReset?email="+target.getEMail()+"&nonce="+nonce+"</a>");
         Mail mail = new Mail(from, subject, to, content);
 
         SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+        log.info("Using sendgrid host "+sg.getHost());
         Request request = new Request();
         try {
             request.setMethod(Method.POST);

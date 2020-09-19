@@ -1,5 +1,6 @@
 package net.ddns.worldofjarcraft.Security;
 
+import lombok.extern.log4j.Log4j2;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.Benutzer;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.BenutzerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
+@Log4j2
 public class CustomAuthenticationProvider
         implements AuthenticationProvider {
 
@@ -25,7 +27,7 @@ public class CustomAuthenticationProvider
         String password = authentication.getCredentials().toString();
 
         Benutzer b = Benutzer.getBenutzer(users,name);
-        System.out.println("Log in: "+name+":"+password+"found: "+(b!=null));
+        log.info("Log in: "+name+"found: "+(b!=null));
         if (b!=null && b.getPasswort().equals(password)) {
 
             // use the credentials
