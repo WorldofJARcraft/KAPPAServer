@@ -8,8 +8,8 @@ import java.util.List;
 @Entity
 public class Kuehlschrank {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "laufnummer")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "laufnummer", columnDefinition = "serial")
     private int laufNummer;
 
     @Column

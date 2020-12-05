@@ -17,8 +17,8 @@ public interface LebensmittelRepository extends CrudRepository<Lebensmittel, Int
 
 
     @Query("select e from Lebensmittel e where e.Besitzer=:besitzer and e.Fach=:fach order by name")
-    public List<Lebensmittel> getAllByBesitzerIsAndFachIsOrderByName(Benutzer besitzer, Fach fach);
+    public List<Lebensmittel> getAllByBesitzerIsAndFachIsOrderByName(@Param("besitzer") Benutzer besitzer, @Param("fach") Fach fach);
 
     @Query("select e from Lebensmittel e where e.Besitzer=:besitzer order by name")
-    public List<Lebensmittel> getAllByBesitzerIsOrderByName(Benutzer besitzer);
+    public List<Lebensmittel> getAllByBesitzerIsOrderByName(@Param("besitzer") Benutzer besitzer);
 }

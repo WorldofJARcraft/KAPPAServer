@@ -12,8 +12,8 @@ public class Einkauf {
     @JoinColumn(name = "Benutzer")
     private Benutzer nutzer;
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "Num")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Num", columnDefinition = "serial")
     private int id;
 
     public String getLebensmittel() {

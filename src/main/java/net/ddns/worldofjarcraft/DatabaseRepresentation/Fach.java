@@ -7,8 +7,8 @@ import java.util.List;
 @Entity
 public class Fach {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "lnummer")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "lnummer", columnDefinition = "serial")
     private int lNummer;
 
     @ManyToOne
