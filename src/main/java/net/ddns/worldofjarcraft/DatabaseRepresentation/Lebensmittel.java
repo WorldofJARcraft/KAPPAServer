@@ -15,7 +15,7 @@ import java.util.List;
 @Log4j2
 public class Lebensmittel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column
     private int Nummer;
 

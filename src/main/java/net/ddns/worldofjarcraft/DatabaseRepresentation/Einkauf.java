@@ -12,7 +12,7 @@ public class Einkauf {
     @JoinColumn(name = "Benutzer")
     private Benutzer nutzer;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "Num")
     private int id;
 

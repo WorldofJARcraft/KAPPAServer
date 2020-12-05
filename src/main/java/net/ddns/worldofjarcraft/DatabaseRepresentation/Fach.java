@@ -7,7 +7,7 @@ import java.util.List;
 @Entity
 public class Fach {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "lnummer")
     private int lNummer;
 

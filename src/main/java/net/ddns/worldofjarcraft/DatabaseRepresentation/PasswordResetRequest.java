@@ -23,7 +23,7 @@ import java.security.SecureRandom;
 public class PasswordResetRequest {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Column

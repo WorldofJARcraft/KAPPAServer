@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 public class Kuehlschrank {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "laufnummer")
     private int laufNummer;
 
