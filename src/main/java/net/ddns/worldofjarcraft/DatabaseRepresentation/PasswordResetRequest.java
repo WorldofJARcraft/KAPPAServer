@@ -9,6 +9,7 @@ import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
+import net.ddns.worldofjarcraft.Security.AdminNotifierErrorHandler;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -68,7 +69,7 @@ public class PasswordResetRequest {
             log.info("Sendgrid response: "+response.getBody());
             log.info("Sendgrid headers: "+response.getHeaders());
         } catch (IOException ex) {
-            log.error(ex);
+            AdminNotifierErrorHandler.handleException(ex, target.getEMail());
         }
         repository.save(this);
     }

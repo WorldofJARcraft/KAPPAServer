@@ -3,6 +3,7 @@ package net.ddns.worldofjarcraft.UserManagement;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import net.ddns.worldofjarcraft.DatabaseRepresentation.*;
+import net.ddns.worldofjarcraft.Security.AdminNotifierErrorHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +76,7 @@ public class UserManagementController {
             try {
                 new PasswordResetRequest().createAndNotifyUser(respectiveUser, newPassword, resetRepository);
             } catch (Exception e){
-                log.error(e);
+                AdminNotifierErrorHandler.handleException(e, respectiveUser.getEMail());
                 return new ResponseEntity<>(new ErrorClass("Internal error"), HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>("OK", HttpStatus.OK);
@@ -115,7 +116,7 @@ public class UserManagementController {
                     }
                 }
             } catch (Exception e){
-                log.error(e);
+                AdminNotifierErrorHandler.handleException(e, email);
                 return new ResponseEntity<>(new ErrorClass("Internal error"), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }

@@ -109,7 +109,7 @@ public class LebensmittelController {
         return new ResponseEntity<ErrorClass>(error, HttpStatus.UNAUTHORIZED);
     }
     @GetMapping("/migrate")
-    public void migrate(){
+    public void migrate() {
         new Lebensmittel().migrateAll(lebensmittelRepository);
     }
 
